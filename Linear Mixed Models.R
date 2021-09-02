@@ -1,8 +1,8 @@
 # Instalando os pacotes no seu computador
 install.packages("readxl") # ler arquivo de excel
-install.packages("lme4") # fazer as an·lises
-install.packages("ggplot2") # fazer os gr·ficos
-install.packages("ggeffects") # fazer os gr·ficos
+install.packages("lme4") # fazer as an√°lises
+install.packages("ggplot2") # fazer os gr√°ficos
+install.packages("ggeffects") # fazer os gr√°ficos
 install.packages("stargazer") # tabela de resultados
 install.packages("sjPlot") # tabela de resultados como imagem
 install.packages("report") # escrita dos resultados
@@ -20,31 +20,31 @@ library(report)
 dados <- readxl::read_excel(file.choose())
 View(dados)
 
-########## Crossed random effects| Efeitos AleatÛrios Cruzados ##########
+########## Crossed random effects| Efeitos Aleat√≥rios Cruzados ##########
 
-# Os efeitos cruzados s„o considerados independentes uns dos outros 
-# e s„o especificados como termos aleatÛrios separados na fÛrmula do modelo
+# Os efeitos cruzados s√£o considerados independentes uns dos outros 
+# e s√£o especificados como termos aleat√≥rios separados na f√≥rmula do modelo
 
 #########################################################################
 
-########## MODELO 1: ATRS; grupo como efeito fixo; ID e tempo como efeito aleatÛrio##########
+########## MODELO 1: ATRS; grupo como efeito fixo; ID e tempo como efeito aleat√≥rio##########
 
-# Vamos testar o modelo onde interceptos e inclinaÁıes variam
+# Vamos testar o modelo onde interceptos e inclina√ß√µes variam
 modelo1 <- lmer(atrs ~ grupo + (grupo|numero) + (grupo|tempo), REML = FALSE, data = dados)
 
-#isSingular Avalia se um modelo misto ajustado È (quase / quase) singular
-# ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-# as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
-## Se "TRUE", ent„o È singular. Se "FALSE", ent„o n„o È singular
+#isSingular Avalia se um modelo misto ajustado √© (quase / quase) singular
+# ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+# as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
+## Se "TRUE", ent√£o √© singular. Se "FALSE", ent√£o n√£o √© singular
 isSingular(modelo1, tol = 1e-4)
 
-# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclinaÁ„o È fixa
+# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclina√ß√£o √© fixa
 modelo1 <- lmer(atrs ~ grupo + (1|numero) + (1|tempo), REML = FALSE, data = dados)
 
 #modelo1 <- lmer(atrs ~ grupo + tempo + (1|numero) , REML = FALSE, data = dados)
 summary(modelo1, correlation = FALSE)
 
-#Alocando os resultados para calcular intervalo de confianÁa
+#Alocando os resultados para calcular intervalo de confian√ßa
 resultados <- profile(modelo1, which = NULL, alphamax = 0.01,
                       maxpts = 100, delta = NULL,
                       delta.cutoff = 1/8, verbose = 0, devtol = 1e-09,
@@ -54,7 +54,7 @@ resultados <- profile(modelo1, which = NULL, alphamax = 0.01,
                       ncpus = getOption("profile.ncpus", 1L), cl = NULL,
                       prof.scale = c("sdcor","varcov"))
 
-#Calcular intervalos de confianÁa para parametros do ajuste do modelo de lmer
+#Calcular intervalos de confian√ßa para parametros do ajuste do modelo de lmer
 confint(resultados,
         parm = "beta_",
         level = 0.95,
@@ -64,12 +64,12 @@ confint(resultados,
         FUN = NULL,
         oldNames = FALSE)
 
-#Avalia se um modelo misto ajustado È (quase / quase) singular
-#ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-#as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
+#Avalia se um modelo misto ajustado √© (quase / quase) singular
+#ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+#as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
 isSingular(modelo1, tol = 1e-4)
 
-#Normalidade dos ResÌduos
+#Normalidade dos Res√≠duos
 plot(modelo1)
 
 #QQ-Plot
@@ -88,7 +88,7 @@ plot(mm_plot)
 
 ggpredict(modelo1, terms = c("grupo", "tempo"), type = "re") |> 
   plot() +
-  labs(x = "Grupo", y = "ATRS", title = "DiferenÁa na ATRS entre Tempos de coleta nos Grupos") + 
+  labs(x = "Grupo", y = "ATRS", title = "Diferen√ßa na ATRS entre Tempos de coleta nos Grupos") + 
   theme_minimal()
 
 # Tabela com Resultados
@@ -103,23 +103,23 @@ sjPlot::tab_model(modelo1)
 resultados1 <- report::report(modelo1)
 print(resultados1)
 
-########## MODELO 1: ATRS; grupo e tempo como efeito fixo; ID como efeito aleatÛrio##########
+########## MODELO 1: ATRS; grupo e tempo como efeito fixo; ID como efeito aleat√≥rio##########
 
-# Vamos testar o modelo onde interceptos e inclinaÁıes variam
+# Vamos testar o modelo onde interceptos e inclina√ß√µes variam
 modelo1_2 <- lmer(atrs ~ grupo + tempo + (grupo + tempo|numero) , REML = FALSE, data = dados)
 
-#isSingular Avalia se um modelo misto ajustado È (quase / quase) singular
-# ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-# as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
-## Se "TRUE", ent„o È singular. Se "FALSE", ent„o n„o È singular
+#isSingular Avalia se um modelo misto ajustado √© (quase / quase) singular
+# ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+# as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
+## Se "TRUE", ent√£o √© singular. Se "FALSE", ent√£o n√£o √© singular
 isSingular(modelo1_2, tol = 1e-4)
 
-# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclinaÁ„o È fixa
+# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclina√ß√£o √© fixa
 
 modelo1_2 <- lmer(atrs ~ grupo + tempo + (1|numero) , REML = FALSE, data = dados)
 summary(modelo1_2)
 
-#Alocando os resultados para calcular intervalo de confianÁa
+#Alocando os resultados para calcular intervalo de confian√ßa
 resultados <- profile(modelo1_2, which = NULL, alphamax = 0.01,
                       maxpts = 100, delta = NULL,
                       delta.cutoff = 1/8, verbose = 0, devtol = 1e-09,
@@ -129,7 +129,7 @@ resultados <- profile(modelo1_2, which = NULL, alphamax = 0.01,
                       ncpus = getOption("profile.ncpus", 1L), cl = NULL,
                       prof.scale = c("sdcor","varcov"))
 
-#Calcular intervalos de confianÁa para parametros do ajuste do modelo de lmer
+#Calcular intervalos de confian√ßa para parametros do ajuste do modelo de lmer
 confint(resultados,
         parm = "beta_",
         level = 0.95,
@@ -139,12 +139,12 @@ confint(resultados,
         FUN = NULL,
         oldNames = FALSE)
 
-#Avalia se um modelo misto ajustado È (quase / quase) singular
-#ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-#as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
+#Avalia se um modelo misto ajustado √© (quase / quase) singular
+#ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+#as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
 isSingular(modelo1_2, tol = 1e-4)
 
-#Normalidade dos ResÌduos
+#Normalidade dos Res√≠duos
 plot(modelo1_2)
 
 #QQ-Plot
@@ -163,27 +163,27 @@ sjPlot::tab_model(modelo1_2)
 resultados1_2 <- report::report(modelo1_2)
 print(resultados1_2)
 
-########## Transformando vari·veis em numÈricas para as prÛximas an·lises ########## 
+########## Transformando vari√°veis em num√©ricas para as pr√≥ximas an√°lises ########## 
 dados$eva_repouso <- as.numeric(dados$eva_repouso)
 dados$eva_esforc <- as.numeric(dados$eva_esforc)
 dados$forca <- as.numeric(dados$forca)
 
 ########## MODELO 2: EVA REPOUSO ##########
 
-# Vamos testar o modelo onde interceptos e inclinaÁıes variam
+# Vamos testar o modelo onde interceptos e inclina√ß√µes variam
 modelo2 <- lmer(eva_repouso ~ grupo + (grupo|numero) + (grupo|tempo), data = dados)
 
-#isSingular Avalia se um modelo misto ajustado È (quase / quase) singular
-# ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-# as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
-## Se "TRUE", ent„o È singular. Se "FALSE", ent„o n„o È singular
+#isSingular Avalia se um modelo misto ajustado √© (quase / quase) singular
+# ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+# as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
+## Se "TRUE", ent√£o √© singular. Se "FALSE", ent√£o n√£o √© singular
 isSingular(modelo2, tol = 1e-4)
 
-# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclinaÁ„o È fixa
+# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclina√ß√£o √© fixa
 modelo2 <- lmer(eva_repouso ~ grupo + (1|numero) + (1|tempo), data = dados)
 summary(modelo2, correlation = FALSE)
 
-#Alocando os resultados para calcular intervalo de confianÁa
+#Alocando os resultados para calcular intervalo de confian√ßa
 resultados <- profile(modelo2, which = NULL, alphamax = 0.01,
                       maxpts = 100, delta = NULL,
                       delta.cutoff = 1/8, verbose = 0, devtol = 1e-09,
@@ -193,7 +193,7 @@ resultados <- profile(modelo2, which = NULL, alphamax = 0.01,
                       ncpus = getOption("profile.ncpus", 1L), cl = NULL,
                       prof.scale = c("sdcor","varcov"))
 
-#Calcular intervalos de confianÁa para parametros do ajuste do modelo de lmer
+#Calcular intervalos de confian√ßa para parametros do ajuste do modelo de lmer
 confint(resultados,
         parm = "beta_",
         level = 0.95,
@@ -203,12 +203,12 @@ confint(resultados,
         FUN = NULL,
         oldNames = FALSE)
 
-#Avalia se um modelo misto ajustado È (quase / quase) singular
-#ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-#as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
+#Avalia se um modelo misto ajustado √© (quase / quase) singular
+#ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+#as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
 isSingular(modelo2, tol = 1e-4)
 
-#Normalidade dos ResÌduos
+#Normalidade dos Res√≠duos
 plot(modelo2)
 
 #QQ-Plot
@@ -227,7 +227,7 @@ plot(mm_plot)
 
 ggpredict(modelo2, terms = c("grupo", "tempo"), type = "re") |> 
   plot() +
-  labs(x = "Grupo", y = "ATRS", title = "DiferenÁa na ATRS entre Tempos de coleta nos Grupos") + 
+  labs(x = "Grupo", y = "ATRS", title = "Diferen√ßa na ATRS entre Tempos de coleta nos Grupos") + 
   theme_minimal()
 
 # Tabela com Resultados
@@ -242,22 +242,22 @@ sjPlot::tab_model(modelo2)
 resultados2 <- report::report(modelo2)
 print(resultados2)
 
-########## MODELO 3: EVA EsforÁo ##########
+########## MODELO 3: EVA Esfor√ßo ##########
 
-# Vamos testar o modelo onde interceptos e inclinaÁıes variam
+# Vamos testar o modelo onde interceptos e inclina√ß√µes variam
 modelo3 <- lmer(eva_esforc ~ grupo + (grupo|numero) + (grupo|tempo), data = dados)
 
-#isSingular Avalia se um modelo misto ajustado È (quase / quase) singular
-# ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-# as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
-## Se "TRUE", ent„o È singular. Se "FALSE", ent„o n„o È singular
+#isSingular Avalia se um modelo misto ajustado √© (quase / quase) singular
+# ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+# as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
+## Se "TRUE", ent√£o √© singular. Se "FALSE", ent√£o n√£o √© singular
 isSingular(modelo3, tol = 1e-4)
 
-# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclinaÁ„o È fixa
+# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclina√ß√£o √© fixa
 modelo3 <- lmer(eva_esforc ~ grupo + (1|numero) + (1|tempo), data = dados)
 summary(modelo3, correlation = FALSE)
 
-#Alocando os resultados para calcular intervalo de confianÁa
+#Alocando os resultados para calcular intervalo de confian√ßa
 resultados <- profile(modelo3, which = NULL, alphamax = 0.01,
                       maxpts = 100, delta = NULL,
                       delta.cutoff = 1/8, verbose = 0, devtol = 1e-09,
@@ -267,7 +267,7 @@ resultados <- profile(modelo3, which = NULL, alphamax = 0.01,
                       ncpus = getOption("profile.ncpus", 1L), cl = NULL,
                       prof.scale = c("sdcor","varcov"))
 
-#Calcular intervalos de confianÁa para parametros do ajuste do modelo de lmer
+#Calcular intervalos de confian√ßa para parametros do ajuste do modelo de lmer
 confint(resultados,
         parm = "beta_",
         level = 0.95,
@@ -277,12 +277,12 @@ confint(resultados,
         FUN = NULL,
         oldNames = FALSE)
 
-#Avalia se um modelo misto ajustado È (quase / quase) singular
-#ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-#as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
+#Avalia se um modelo misto ajustado √© (quase / quase) singular
+#ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+#as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
 isSingular(modelo3, tol = 1e-4)
 
-#Normalidade dos ResÌduos
+#Normalidade dos Res√≠duos
 plot(modelo3)
 
 #QQ-Plot
@@ -301,7 +301,7 @@ plot(mm_plot)
 
 ggpredict(modelo3, terms = c("grupo", "tempo"), type = "re") |> 
   plot() +
-  labs(x = "Grupo", y = "ATRS", title = "DiferenÁa na ATRS entre Tempos de coleta nos Grupos") + 
+  labs(x = "Grupo", y = "ATRS", title = "Diferen√ßa na ATRS entre Tempos de coleta nos Grupos") + 
   theme_minimal()
 
 # Tabela com Resultados
@@ -316,22 +316,22 @@ sjPlot::tab_model(modelo3)
 resultados3 <- report::report(modelo3)
 print(resultados3)
 
-########## MODELO 4: ForÁa ##########
+########## MODELO 4: For√ßa ##########
 
-# Vamos testar o modelo onde interceptos e inclinaÁıes variam
+# Vamos testar o modelo onde interceptos e inclina√ß√µes variam
 modelo4 <- lmer(forca ~ grupo + (grupo|numero) + (grupo|tempo), data = dados)
 
-#isSingular Avalia se um modelo misto ajustado È (quase / quase) singular
-# ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-# as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
-## Se "TRUE", ent„o È singular. Se "FALSE", ent„o n„o È singular
+#isSingular Avalia se um modelo misto ajustado √© (quase / quase) singular
+# ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+# as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
+## Se "TRUE", ent√£o √© singular. Se "FALSE", ent√£o n√£o √© singular
 isSingular(modelo4, tol = 1e-4)
 
-# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclinaÁ„o È fixa
+# Sendo assim, testaremos o modelo onde os interceptos variam mas a inclina√ß√£o √© fixa
 modelo4 <- lmer(forca ~ grupo + (1|numero) + (1|tempo), data = dados)
 summary(modelo4, correlation = FALSE)
 
-#Alocando os resultados para calcular intervalo de confianÁa
+#Alocando os resultados para calcular intervalo de confian√ßa
 resultados <- profile(modelo4, which = NULL, alphamax = 0.01,
                       maxpts = 100, delta = NULL,
                       delta.cutoff = 1/8, verbose = 0, devtol = 1e-09,
@@ -341,7 +341,7 @@ resultados <- profile(modelo4, which = NULL, alphamax = 0.01,
                       ncpus = getOption("profile.ncpus", 1L), cl = NULL,
                       prof.scale = c("sdcor","varcov"))
 
-#Calcular intervalos de confianÁa para parametros do ajuste do modelo de lmer
+#Calcular intervalos de confian√ßa para parametros do ajuste do modelo de lmer
 confint(resultados,
         parm = "beta_",
         level = 0.95,
@@ -351,12 +351,12 @@ confint(resultados,
         FUN = NULL,
         oldNames = FALSE)
 
-#Avalia se um modelo misto ajustado È (quase / quase) singular
-#ou seja, os par‚metros est„o no limite do espaÁo de par‚metros vi·vel:
-#as vari‚ncias de uma ou mais combinaÁıes lineares de efeitos s„o (perto de) zero.
+#Avalia se um modelo misto ajustado √© (quase / quase) singular
+#ou seja, os par√¢metros est√£o no limite do espa√ßo de par√¢metros vi√°vel:
+#as vari√¢ncias de uma ou mais combina√ß√µes lineares de efeitos s√£o (perto de) zero.
 isSingular(modelo4, tol = 1e-4)
 
-#Normalidade dos ResÌduos
+#Normalidade dos Res√≠duos
 plot(modelo4)
 
 #QQ-Plot
@@ -375,7 +375,7 @@ plot(mm_plot)
 
 ggpredict(modelo4, terms = c("grupo", "tempo"), type = "re") |> 
   plot() +
-  labs(x = "Grupo", y = "ATRS", title = "DiferenÁa na ATRS entre Tempos de coleta nos Grupos") + 
+  labs(x = "Grupo", y = "ATRS", title = "Diferen√ßa na ATRS entre Tempos de coleta nos Grupos") + 
   theme_minimal()
 
 # Tabela com Resultados
